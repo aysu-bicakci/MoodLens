@@ -1,10 +1,10 @@
 import streamlit as st
-from functions import download_video, analyze_video, live_camera_analysis
+from gfunctions import download_video, identify_speaker_transcribe_and_emotion, live_camera_analysis
 import tempfile
 
 st.title("Video ve Canlı Kamera Duygu Analizi Uygulaması")
 
-# Video URL'si ile indirme ve izleme
+# Video URL ile indirme ve analiz
 video_url = st.text_input("Video URL'sini gir ve indir")
 
 if video_url:
@@ -15,13 +15,13 @@ if video_url:
 
         if st.button("İndirilen videoyu analiz et"):
             with st.spinner("Analiz yapılıyor..."):
-                results = analyze_video(video_path)
+                result_text = identify_speaker_transcribe_and_emotion(video_path)
                 st.success("Analiz tamamlandı!")
-                st.write(results)
+                st.text(result_text)
 
 st.markdown("---")
 
-# Bilgisayardan video yükleme ve izleme
+# Bilgisayardan video yükleme ve analiz
 uploaded_file = st.file_uploader("Bilgisayardan video yükle", type=["mp4", "mov", "avi"])
 
 if uploaded_file is not None:
@@ -33,9 +33,9 @@ if uploaded_file is not None:
                 tmp_file.write(uploaded_file.read())
                 tmp_video_path = tmp_file.name
 
-            results = analyze_video(tmp_video_path)
+            result_text = identify_speaker_transcribe_and_emotion(tmp_video_path)
             st.success("Analiz tamamlandı!")
-            st.write(results)
+            st.text(result_text)
 
 st.markdown("---")
 
@@ -43,4 +43,4 @@ st.markdown("---")
 if st.button("Canlı Kamera Analizini Başlat"):
     st.write("Canlı kamera analizi başlatılıyor... Çıkmak için video penceresinde 'q' tuşuna bas.")
     live_camera_analysis()
-
+    st.write("Canlı analiz sonlandı.")
